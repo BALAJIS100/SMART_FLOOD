@@ -114,8 +114,9 @@ def request_otp(payload: OTPRequest, db: Session = Depends(get_db)):
     log_action(db, user_name=user.full_name, action="REQUEST_OTP", module="Auth", record_id=user.id, details=f"OTP requested for {ident} (Email sent: {email_sent})", user_id=user.id)
     
     return {
-        "message": f"OTP sent successfully to {ident}",
+        "message": f"OTP sent successfully to {ident}" if email_sent else f"OTP generated successfully for {ident}. Passcode: {otp}",
         "email_delivered": email_sent,
+        "otp_code": otp if not email_sent else None,
         "expires_in_minutes": 5
     }
 
