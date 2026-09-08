@@ -87,13 +87,13 @@ export default function LoginPage() {
         </div>
 
         {/* Form Card */}
-        <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 sm:p-8 shadow-2xl backdrop-blur-xl">
+        <div className="bg-slate-900 border border-slate-800 rounded-3xl p-4 sm:p-8 shadow-2xl backdrop-blur-xl">
           {/* Dual Auth Tabs */}
           <div className="flex rounded-xl bg-slate-950 p-1 border border-slate-800 mb-6">
             <button
               type="button"
               onClick={() => setActiveTab('password')}
-              className={`flex-1 py-2 text-xs font-bold rounded-lg transition-all flex items-center justify-center gap-2 ${
+              className={`flex-1 py-2 px-1 text-[11px] sm:text-xs font-bold rounded-lg transition-all flex items-center justify-center gap-1.5 sm:gap-2 ${
                 activeTab === 'password' ? 'bg-blue-600 text-white shadow-md' : 'text-slate-400 hover:text-slate-200'
               }`}
             >
@@ -103,7 +103,7 @@ export default function LoginPage() {
             <button
               type="button"
               onClick={() => setActiveTab('otp')}
-              className={`flex-1 py-2 text-xs font-bold rounded-lg transition-all flex items-center justify-center gap-2 ${
+              className={`flex-1 py-2 px-1 text-[11px] sm:text-xs font-bold rounded-lg transition-all flex items-center justify-center gap-1.5 sm:gap-2 ${
                 activeTab === 'otp' ? 'bg-blue-600 text-white shadow-md' : 'text-slate-400 hover:text-slate-200'
               }`}
             >

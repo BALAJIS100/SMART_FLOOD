@@ -68,10 +68,10 @@ export default function DataTable({
   return (
     <div className="bg-slate-900 border border-slate-800 rounded-2xl p-4 sm:p-5 shadow-xl">
       {/* Controls Bar */}
-      <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 mb-5">
-        <div className="flex flex-1 items-center gap-3">
+      <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 sm:gap-4 mb-5">
+        <div className="flex flex-col sm:flex-row flex-1 items-stretch sm:items-center gap-3">
           {/* Search Input */}
-          <div className="relative flex-1 max-w-md">
+          <div className="relative flex-1 w-full max-w-none sm:max-w-md">
             <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
             <input
               type="text"
@@ -87,14 +87,14 @@ export default function DataTable({
 
           {/* Filter Dropdown */}
           {filterOptions.length > 0 && (
-            <div className="relative">
+            <div className="relative w-full sm:w-auto">
               <select
                 value={selectedFilter}
                 onChange={(e) => {
                   setSelectedFilter(e.target.value);
                   setCurrentPage(1);
                 }}
-                className="appearance-none pl-3 pr-8 py-2 bg-slate-950 border border-slate-800 rounded-xl text-xs text-slate-300 focus:outline-none focus:border-blue-500 cursor-pointer"
+                className="w-full sm:w-auto appearance-none pl-3 pr-8 py-2 bg-slate-950 border border-slate-800 rounded-xl text-xs text-slate-300 focus:outline-none focus:border-blue-500 cursor-pointer"
               >
                 <option value="">All Filters</option>
                 {filterOptions.map((opt) => (
@@ -112,7 +112,7 @@ export default function DataTable({
         {onAddNew && (
           <button
             onClick={onAddNew}
-            className="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs rounded-xl flex items-center justify-center gap-2 transition-all shadow-lg shadow-blue-600/20"
+            className="w-full sm:w-auto px-4 py-2.5 sm:py-2 bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs rounded-xl flex items-center justify-center gap-2 transition-all shadow-lg shadow-blue-600/20 shrink-0"
           >
             <Plus className="w-4 h-4" />
             <span>{addNewLabel}</span>

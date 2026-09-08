@@ -1,18 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { Bell, Shield, LogOut, Clock, Activity, AlertTriangle, User as UserIcon } from 'lucide-react';
+import { Bell, Shield, LogOut, Clock, Activity, AlertTriangle, User as UserIcon, Menu, X } from 'lucide-react';
 import Logo from './Logo';
 
-
-
-export default function Header({ alerts = [] }) {
+export default function Header({ alerts = [], onToggleMobileMenu, isMobileMenuOpen }) {
   const { user, logout } = useAuth();
   const [timeStr, setTimeStr] = useState('');
   const [showAlertsPopover, setShowAlertsPopover] = useState(false);
   const [showProfileDropdown, setShowProfileDropdown] = useState(false);
   const navigate = useNavigate();
-
 
   useEffect(() => {
     const updateTime = () => {
@@ -35,15 +32,25 @@ export default function Header({ alerts = [] }) {
   };
 
   return (
-    <header className="bg-slate-900/80 backdrop-blur-md border-b border-slate-800 sticky top-0 z-40 px-4 lg:px-6 py-3 flex items-center justify-between">
-      {/* Brand Title */}
-      <div className="flex items-center gap-3">
+    <header className="bg-slate-900/80 backdrop-blur-md border-b border-slate-800 sticky top-0 z-40 px-3 sm:px-4 lg:px-6 py-2.5 sm:py-3 flex items-center justify-between">
+      {/* Brand Title & Hamburger Toggle */}
+      <div className="flex items-center gap-2 sm:gap-3">
+        {onToggleMobileMenu && (
+          <button
+            onClick={onToggleMobileMenu}
+            className="lg:hidden p-2 rounded-xl bg-slate-800/80 text-slate-300 hover:text-white border border-slate-700 transition-colors"
+            aria-label="Toggle navigation menu"
+          >
+            {isMobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+          </button>
+        )}
+
         <Logo size="md" />
 
         <div>
-          <div className="flex items-center gap-2">
-            <h1 className="font-extrabold text-lg text-white tracking-tight">SMART FLOOD RESCUE</h1>
-            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+          <div className="flex items-center gap-1.5 sm:gap-2">
+            <h1 className="font-extrabold text-sm sm:text-lg text-white tracking-tight">SMART FLOOD RESCUE</h1>
+            <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] sm:text-xs font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span>
               LIVE OPS
             </span>

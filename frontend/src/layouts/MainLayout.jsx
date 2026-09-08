@@ -6,6 +6,7 @@ import api from '../services/api';
 
 export default function MainLayout() {
   const [alerts, setAlerts] = useState([]);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   useEffect(() => {
     const fetchAlerts = async () => {
@@ -23,10 +24,10 @@ export default function MainLayout() {
 
   return (
     <div className="min-h-screen bg-slate-950 flex flex-col font-sans">
-      <Header alerts={alerts} />
-      <div className="flex flex-1">
-        <Sidebar />
-        <main className="flex-1 p-4 lg:p-6 overflow-y-auto max-w-7xl mx-auto w-full">
+      <Header alerts={alerts} onToggleMobileMenu={() => setMobileMenuOpen(!mobileMenuOpen)} isMobileMenuOpen={mobileMenuOpen} />
+      <div className="flex flex-1 relative">
+        <Sidebar isMobileOpen={mobileMenuOpen} onCloseMobile={() => setMobileMenuOpen(false)} />
+        <main className="flex-1 p-3 sm:p-4 lg:p-6 overflow-y-auto max-w-7xl mx-auto w-full min-w-0">
           <Outlet />
         </main>
       </div>

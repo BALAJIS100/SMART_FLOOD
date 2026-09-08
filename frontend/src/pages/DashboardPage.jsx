@@ -66,19 +66,19 @@ export default function DashboardPage() {
           <p className="text-xs text-slate-400">Real-time situational awareness, emergency monitoring & live analytics</p>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3 w-full sm:w-auto">
           <button
             onClick={fetchDashboardData}
             disabled={loading}
-            className="px-3.5 py-2 bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 rounded-xl text-xs font-semibold flex items-center gap-2 transition-all shadow-md"
+            className="w-full sm:w-auto justify-center px-3.5 py-2 bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 rounded-xl text-xs font-semibold flex items-center gap-2 transition-all shadow-md"
           >
             <RefreshCw className={`w-3.5 h-3.5 text-blue-400 ${loading ? 'animate-spin' : ''}`} />
             <span>Refresh Live Data</span>
           </button>
 
           <button
-            onClick={() => navigate('/reports')}
-            className="px-4 py-2 bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-500 hover:to-cyan-400 text-white font-bold text-xs rounded-xl shadow-lg shadow-blue-600/25 flex items-center gap-2 transition-all"
+            onClick={() => navigate('/dashboard/reports')}
+            className="w-full sm:w-auto justify-center px-4 py-2 bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-500 hover:to-cyan-400 text-white font-bold text-xs rounded-xl shadow-lg shadow-blue-600/25 flex items-center gap-2 transition-all"
           >
             <FileText className="w-4 h-4" />
             <span>Generate Executive Report</span>
@@ -90,7 +90,7 @@ export default function DashboardPage() {
       <AlertBanner alerts={alerts} onViewAlerts={() => {}} />
 
       {/* 10 Key KPI Cards Grid */}
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4">
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4">
         <KpiCard
           title="Active Incidents"
           value={kpis.active_incidents ?? 0}
