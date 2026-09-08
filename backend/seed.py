@@ -49,6 +49,7 @@ def seed_database():
         
         # 2. Seed Demo Users
         users_data = [
+            ("balajisara100@gmail.com", "admin123", "Balaji Sara (Railway State Admin)", "+91 98765 43299", roles_map["Admin"]),
             ("admin@floodrescue.com", "admin123", "Dr. Rajesh Kumar (State Director)", "+91 98765 43210", roles_map["Admin"]),
             ("officer@floodrescue.com", "officer123", "Anitha Sundaram (Disaster Relief Officer)", "+91 98765 43211", roles_map["Disaster Management Officer"]),
             ("rescue@floodrescue.com", "rescue123", "Cmdr. Vikram Singh (NDRF Battalion 4)", "+91 98765 43212", roles_map["Rescue Team Leader"]),

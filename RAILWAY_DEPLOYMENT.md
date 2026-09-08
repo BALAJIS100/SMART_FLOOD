@@ -89,6 +89,7 @@ Upon successful boot, the system automatically initializes the PostgreSQL databa
 
 | User Role | Email | Password | Allowed Access |
 | :--- | :--- | :--- | :--- |
+| **Railway Admin (Primary)** | `balajisara100@gmail.com` | `admin123` | Full System & Railway Admin Rights |
 | **State Director (Admin)** | `admin@floodrescue.com` | `admin123` | Full Administrative Rights |
 | **Disaster Relief Officer** | `officer@floodrescue.com` | `officer123` | Incident & Location Management |
 | **Rescue Team Leader** | `rescue@floodrescue.com` | `rescue123` | Rescue Teams & Operations |

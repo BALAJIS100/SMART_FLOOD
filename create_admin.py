@@ -12,9 +12,9 @@ from app.models.user import User
 from app.auth.security import get_password_hash
 
 def create_admin_user(
-    email: str = "balajikavi100@gmail.com",
+    email: str = "balajisara100@gmail.com",
     password: str = "admin123",
-    full_name: str = "Balaji Kavi (State Admin)",
+    full_name: str = "Balaji Sara (State Admin)",
     phone: str = "+91 98765 43299"
 ):
     print("[1/3] Connecting to database & verifying table schemas...")
