@@ -41,7 +41,7 @@ class Settings:
     SMTP_USE_TLS: bool = os.getenv("SMTP_USE_TLS", "True").lower() in ("true", "1", "t")
     SMTP_USER: str = os.getenv("SMTP_USER", "digitalalchemists00@gmail.com")
     SMTP_PASSWORD: str = os.getenv("SMTP_PASSWORD", "wrrn psnl emjg bvae")
-    DEFAULT_FROM_EMAIL: str = os.getenv("DEFAULT_FROM_EMAIL", "digitalalchemists00@gmail.com")
+    DEFAULT_FROM_EMAIL: str = os.getenv("DEFAULT_FROM_EMAIL", os.getenv("MAIL_FROM", "balajisara100@gmail.com"))
 
 settings = Settings()
 
