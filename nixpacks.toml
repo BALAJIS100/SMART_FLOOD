@@ -2,18 +2,18 @@
 providers = ["node", "python"]
 
 [phases.setup]
-nixPkgs = ["python310", "nodejs_18"]
+nixPkgs = ["python310", "nodejs-18_x"]
 
 [phases.install]
 cmds = [
   "python -m pip install --upgrade pip",
   "python -m pip install -r backend/requirements.txt",
-  "npm --prefix frontend install"
+  "cd frontend && npm install"
 ]
 
 [phases.build]
 cmds = [
-  "npm --prefix frontend run build"
+  "cd frontend && npm run build"
 ]
 
 [start]
