@@ -1,4 +1,9 @@
 import smtplib
+import ssl
+import json
+import os
+import urllib.request
+import urllib.error
 import logging
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
@@ -6,9 +11,87 @@ from app.config import settings
 
 logger = logging.getLogger(__name__)
 
+def _send_via_brevo_api(to_email: str, subject: str, html_content: str, text_content: str) -> bool:
+    """Attempts to send email via Brevo HTTPS REST API (Port 443 - Firewall Bypass)."""
+    api_key = os.getenv("BREVO_API_KEY") or settings.SMTP_PASSWORD
+    sender_email = settings.DEFAULT_FROM_EMAIL or settings.SMTP_USER
+    
+    if not api_key or len(api_key) < 10:
+        return False
+
+    url = "https://api.brevo.com/v3/smtp/email"
+    headers = {
+        "accept": "application/json",
+        "api-key": api_key,
+        "content-type": "application/json"
+    }
+    payload = {
+        "sender": {"name": "Flood Rescue Operations", "email": sender_email},
+        "to": [{"email": to_email}],
+        "subject": subject,
+        "htmlContent": html_content,
+        "textContent": text_content
+    }
+    try:
+        print(f"[BREVO API] Sending email via HTTPS API to {to_email}...")
+        req = urllib.request.Request(url, data=json.dumps(payload).encode("utf-8"), headers=headers, method="POST")
+        with urllib.request.urlopen(req, timeout=10) as response:
+            if response.status in (200, 201, 202):
+                print(f"[BREVO API SUCCESS] OTP email successfully delivered to {to_email}")
+                return True
+    except Exception as e:
+        print(f"[BREVO API NOTICE] REST API attempt failed: {e}")
+    return False
+
+
+def _send_via_smtp(to_email: str, subject: str, html_content: str, text_content: str) -> bool:
+    """Sends email via standard SMTP with support for Port 465 (SSL), 587, and 2525."""
+    sender_email = settings.DEFAULT_FROM_EMAIL or settings.SMTP_USER
+    msg = MIMEMultipart("alternative")
+    msg["Subject"] = subject
+    msg["From"] = f"Flood Rescue Operations <{sender_email}>"
+    msg["To"] = to_email
+    msg.attach(MIMEText(text_content, "plain"))
+    msg.attach(MIMEText(html_content, "html"))
+
+    host = settings.SMTP_HOST
+    port = settings.SMTP_PORT
+    user = settings.SMTP_USER
+    pwd = settings.SMTP_PASSWORD
+
+    ports_to_try = [port]
+    if port == 587 and 2525 not in ports_to_try:
+        ports_to_try.append(2525)
+    if 465 not in ports_to_try:
+        ports_to_try.append(465)
+
+    for p in ports_to_try:
+        try:
+            print(f"[SMTP] Attempting connection to {host}:{p}...")
+            if p == 465:
+                context = ssl.create_default_context()
+                with smtplib.SMTP_SSL(host, p, context=context, timeout=10) as server:
+                    server.login(user, pwd)
+                    server.send_message(msg)
+            else:
+                with smtplib.SMTP(host, p, timeout=10) as server:
+                    if settings.SMTP_USE_TLS or p in (587, 2525):
+                        server.starttls()
+                    server.login(user, pwd)
+                    server.send_message(msg)
+
+            print(f"[SMTP SUCCESS] OTP email sent to {to_email} via port {p}")
+            return True
+        except Exception as e:
+            print(f"[SMTP WARNING] Connection to {host}:{p} failed: {e}")
+            continue
+
+    return False
+
+
 def send_otp_email(to_email: str, otp_code: str) -> bool:
     """
-    Sends a 6-digit OTP code to the recipient's email address via Gmail SMTP.
+    Sends a 6-digit OTP code to the recipient's email address using Brevo API or SMTP.
     """
     if not to_email or "@" not in to_email:
         logger.warning(f"Invalid email address provided for OTP: {to_email}")
@@ -60,23 +143,15 @@ Flood Rescue Emergency Operations Command
     </html>
     """
 
-    try:
-        msg = MIMEMultipart("alternative")
-        msg["Subject"] = subject
-        msg["From"] = f"Flood Rescue Operations <{settings.DEFAULT_FROM_EMAIL}>"
-        msg["To"] = to_email
+    # 1. Try Brevo HTTPS REST API first (Bypasses port blocks/timeouts on Railway)
+    if "brevo" in settings.SMTP_HOST.lower() or os.getenv("BREVO_API_KEY") or settings.SMTP_PASSWORD.startswith(("xkeysib-", "xsmtpsib-")):
+        if _send_via_brevo_api(to_email, subject, html_content, text_content):
+            return True
 
-        msg.attach(MIMEText(text_content, "plain"))
-        msg.attach(MIMEText(html_content, "html"))
-
-        with smtplib.SMTP(settings.SMTP_HOST, settings.SMTP_PORT, timeout=10) as server:
-            if settings.SMTP_USE_TLS:
-                server.starttls()
-            server.login(settings.SMTP_USER, settings.SMTP_PASSWORD)
-            server.send_message(msg)
-
-        print(f"[SMTP] OTP email successfully sent to {to_email}")
+    # 2. Fallback to Multi-port SMTP (587 -> 2525 -> 465 SSL)
+    if _send_via_smtp(to_email, subject, html_content, text_content):
         return True
-    except Exception as e:
-        print(f"[SMTP ERROR] Failed to send OTP email to {to_email}: {e}")
-        return False
+
+    print(f"[ERROR] All email delivery methods failed for {to_email}")
+    return False
+
